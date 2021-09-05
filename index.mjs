@@ -27,11 +27,18 @@ function colorize(cmd) {
   })
 }
 
+function substitute(arg) {
+  if (arg instanceof ProcessOutput) {
+    return arg.stdout.replace(/\n$/, '')
+  }
+  return arg
+}
+
 export function $(pieces, ...args) {
   let __from = (new Error().stack.split('at ')[2]).trim()
   let cmd = pieces[0], i = 0
   for (; i < args.length; i++) {
-    cmd += args[i] + pieces[i + 1]
+    cmd += substitute(args[i]) + pieces[i + 1]
   }
   for (++i; i < pieces.length; i++) {
     cmd = pieces[i]
@@ -150,15 +157,15 @@ export class ProcessOutput {
   }
 
   toString() {
-    return this.#combined.replace(/\n$/, '')
+    return this.#combined
   }
 
   get stdout() {
-    return this.#stdout.replace(/\n$/, '')
+    return this.#stdout
   }
 
   get stderr() {
-    return this.#stderr.replace(/\n$/, '')
+    return this.#stderr
   }
 
   get exitCode() {
