@@ -19,6 +19,8 @@ interface $ {
   verbose: boolean
   shell: string
   cwd: string
+  prefix: string
+  quote: (input: string) => string
 }
 
 export const $: $
