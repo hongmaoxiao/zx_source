@@ -12,13 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-function assert(cond, msg) {
-  if (cond) return
-  console.error('Assertion failed')
-  if (msg) console.error(msg)
-  process.exit(1)
-
-}
+import {strict as assert} from 'assert'
 
 {
   let hello = await $`echo Error >&2; echo Hello`
@@ -68,3 +62,10 @@ function assert(cond, msg) {
   }
   assert(p.exitCode === 1)
 }
+
+{
+  process.env.FOO = 'hi; exit 1'
+  await $`echo $FOO`
+}
+
+console.log(chalk.green('🍺 Success!'))
