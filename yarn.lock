@@ -56,11 +56,6 @@ supports-color@^7.1.0:
   dependencies:
     has-flag "^4.0.0"
 
-uuid@^8.3.2:
-  version "8.3.2"
-  resolved "https://registry.nlark.com/uuid/download/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
-  integrity sha1-gNW1ztJxu5r2xEXyGhoExgbO++I=
-
 which@^2.0.2:
   version "2.0.2"
   resolved "https://registry.nlark.com/which/download/which-2.0.2.tgz#7c6a8dd0a636a0327e10b59c9286eee93f3f51b1"
