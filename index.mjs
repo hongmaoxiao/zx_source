@@ -81,9 +81,9 @@ export function $(pieces, ...args) {
       combined += data
     })
     child.on('exit', code => {
-      const cb = (code === 0 ? resolve : reject)
       child.on('close', () => {
-        cb(new ProcessOutput({code,  stdout, stderr, combined, __from}))
+        c(code === 0 ? resolve : reject)
+        (new ProcessOutput({code,  stdout, stderr, combined, __from}))
       })
     })
   })
