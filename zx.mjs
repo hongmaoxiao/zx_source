@@ -32,8 +32,7 @@ Object.assign(global, {
   question,
   chalk,
   fs,
-  os,
-  require: createRequire(import.meta.url)
+  os
 })
 
 try {
@@ -111,9 +110,11 @@ async function writeAndImport(filepath, script) {
 async function importPath(filepath) {
   let __filename = resolve(filepath)
   let __dirname = dirname(__filename)
+  let require = createRequire(filepath)
   Object.assign(global, {
     __filename,
-    __dirname
+    __dirname,
+    require
   })
   await import(url.pathToFileURL(filepath))
 }
