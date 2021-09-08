@@ -17,10 +17,13 @@
 import {join, basename, resolve, dirname} from 'path'
 import os, {tmpdir} from 'os'
 import {promises as fs} from 'fs'
+import { createRequire } from 'module'
 import url from 'url'
 import {v4 as uuid} from 'uuid'
 import {$, cd, question, fetch, chalk, ProcessOutput} from './index.mjs'
-import {version} from './version.js'
+// import {version} from './version.js'
+import pkg from './version.js'
+const {version} = pkg
 
 Object.assign(global, {
   $,
@@ -30,6 +33,7 @@ Object.assign(global, {
   chalk,
   fs,
   os,
+  require: createRequire(import.meta.url)
 })
 
 try {
