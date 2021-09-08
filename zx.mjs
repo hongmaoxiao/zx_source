@@ -20,7 +20,7 @@ import {promises as fs} from 'fs'
 import { createRequire } from 'module'
 import url from 'url'
 import {v4 as uuid} from 'uuid'
-import {$, cd, question, fetch, chalk, ProcessOutput} from './index.mjs'
+import {$, cd, question, fetch, chalk, sleep, ProcessOutput} from './index.mjs'
 // import {version} from './version.js'
 import pkg from './version.js'
 const {version} = pkg
@@ -31,6 +31,7 @@ Object.assign(global, {
   fetch,
   question,
   chalk,
+  sleep,
   fs,
   os
 })
