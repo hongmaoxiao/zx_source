@@ -25,7 +25,7 @@ interface $ {
 
 export const $: $
 
-export function cd(path: string)
+export function cd(path: string): void
 
 export function question(query?: string, options?: QuestionOptions): Promise<string>
 type QuestionOptions = { choices: string[] }
