@@ -41,9 +41,13 @@ export function $(pieces, ...args) {
   let cmd = pieces[0], i = 0
   while (i < args.length) {
     cmd += $.quote(substitute(args[i])) + pieces[i + 1]
-  }
-  for (++i; i < pieces.length; i++) {
-    cmd = pieces[i]
+    let s
+    if (Array.isArray(args[i])) {
+      s = args[i].map(x => $.quote(substitute(x))).join(' ')
+    } else {
+      s = $.quote(substitute(args[i]))
+    }
+    cmd += s + pieces[++i]
   }
 
   if ($.verbose) {
