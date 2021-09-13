@@ -61,7 +61,7 @@ try {
   }
 } catch (p) {
   if (p instanceof ProcessOutput) {
-    console.error('  at ' + p.__from)
+    console.error('  at ' + p.message)
     process.exit(1)
   } else {
     throw p

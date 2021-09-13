@@ -12,10 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { ProcessOutput } from "./index.mjs";
+import {ChildProcess} from 'child_process'
+import {Readable, Writable} from 'stream'
 
 interface $ {
-  (pieces: TemplateStringsArray, ...args: any[]): Promise<ProcessOutput>
+  (pieces: TemplateStringsArray, ...args: any[]): ProcessPromise<ProcessOutput>
   verbose: boolean
   shell: string
   cwd: string
@@ -31,6 +32,14 @@ export function question(query?: string, options?: QuestionOptions): Promise<str
 type QuestionOptions = { choices: string[] }
 
 export function sleep(ms: number): Promise<void>
+
+export interface ProcessPromise<T> extends Promise<T> {
+  child: ChildProcess
+  readonly stdin: Writable
+  readonly stdout: Readable
+  readonly stderr: Readable
+  pipe(dest: ProcessPromise<ProcessOutput>|Writable): ProcessPromise<ProcessOutput>
+}
 
 export class ProcessOutput {
   readonly exitCode: number

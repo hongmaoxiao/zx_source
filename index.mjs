@@ -86,8 +86,11 @@ export function $(pieces, ...args) {
   let promise = new ProcessPromise((resolve, reject) => {
     child.on('exit', code => {
       child.on('close', () => {
-        (code === 0 ? resolve : reject)
-        (new ProcessOutput({code,  stdout, stderr, combined, __from}))
+        let output = new ProcessOutput({
+          code, stdout, stderr, combined,
+          message: `${stderr || '\n'}    at ${__from}`
+        })
+        (code === 0 ? resolve : reject)(output)
       })
     })
   })
@@ -113,7 +116,7 @@ export function cd(path) {
   if (!existsSync(path)) {
     let __from = (new Error().stack.split('at ')[2]).trim()
     console.error(`cd: ${path}: No such directory`)
-    console.error(` at ${__from}`)
+    console.error(`   at ${__from}`)
     process.exit(1)
   }
   $.cwd = path
@@ -174,33 +177,25 @@ export class ProcessPromise extends Promise {
     if (dest instanceof ProcessPromise) {
       process.stdin.unpipe(dest.stdin)
       this.stdout.pipe(dest.stdin)
-      let combinedPromise = new ProcessPromise((resolve, reject) => {
-        Promise.all([this, dest])
-          .then(() => resolve(this))
-          .catch(reject)
-      })
-      combinedPromise.child = this.child
-      return combinedPromise
-    } else {
-      this.stdout.pipe(dest)
+      return dest
     }
+    this.stdout.pipe(dest)
     return this
   }
 }
 
-export class ProcessOutput {
+export class ProcessOutput extends Error {
   #code = 0
   #stdout = ''
   #stderr = ''
   #combined = ''
-  #__from = ''
 
-  constructor({code, stdout, stderr, combined, __from}) {
+  constructor({code, stdout, stderr, combined, message}) {
+    super(message)
     this.#code = code
     this.#stdout = stdout
     this.#stderr = stderr
     this.#combined = combined
-    this.#__from = __from
   }
 
   toString() {
@@ -217,9 +212,5 @@ export class ProcessOutput {
 
   get exitCode() {
     return this.#code
-  }
-
-  get __from() {
-    return this.#__from
   }
 }
