@@ -14,23 +14,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {join, basename, extname, resolve, dirname} from 'path'
-import os, {tmpdir} from 'os'
-import {promises as fs, createWriteStream, createReadStream} from 'fs'
+import {basename, dirname, extname, join, parse, resolve} from 'path'
+import {tmpdir} from 'os'
+import {promises as fs} from 'fs'
 import {createRequire} from 'module'
 import url from 'url'
-import {$, cd, question, fetch, chalk, sleep, ProcessOutput} from './index.mjs'
-
-Object.assign(global, {
-  $,
-  cd,
-  fetch,
-  question,
-  chalk,
-  sleep,
-  fs: {...fs, createWriteStream, createReadStream},
-  os
-})
+import {$, fetch, ProcessOutput} from './index.mjs'
 
 try {
   let firstArg = process.argv[2]
@@ -119,6 +108,15 @@ async function importPath(filepath, origin = filepath) {
       join(dirname(filepath), basename(filepath) + '.mjs'),
       origin
     )
+  }
+  if (ext === '.ts') {
+    let {dir, name} = parse(filepath)
+    let outFile = join(dir, name + '.mjs')
+    await $`tsc --target esnext --module esnext --moduleResolution node ${filepath}`
+    await fs.rename(join(dir, name + '.js'), outFile)
+    let wait = importPath(outFile, filepath)
+    await fs.rm(outFile)
+    await wait
   }
   let __filename = resolve(filepath)
   let __dirname = dirname(__filename)
